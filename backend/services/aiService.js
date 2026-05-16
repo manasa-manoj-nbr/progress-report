@@ -66,7 +66,10 @@ Stats:
 Write 3 professional, encouraging sentences. Mention the most improved student, the at-risk situation, and the overall batch trend.`;
 
   try {
-    const text = await generateText(prompt, { maxTokens: 400, fallbackMaxTokens: 400 });
+    const text = await generateText(prompt, {
+      maxTokens: 400,
+      fallbackMaxTokens: 400,
+    });
     // Validate the AI output: we expect at least 3 sentences worth of content.
     if (!text || text.length < 40) {
       return composeFallbackNarrative(aiContext);
@@ -86,7 +89,8 @@ Write 3 professional, encouraging sentences. Mention the most improved student, 
 
 // Deterministic local fallback to ensure a full 3-sentence narrative when AI fails
 function composeFallbackNarrative(aiContext) {
-  const { exam_type, summaryStats, atRiskNames, mostImprovedStudent } = aiContext;
+  const { exam_type, summaryStats, atRiskNames, mostImprovedStudent } =
+    aiContext;
   const {
     total_students,
     active_this_week,
@@ -96,9 +100,10 @@ function composeFallbackNarrative(aiContext) {
   } = summaryStats;
 
   const first = `This week, the batch of ${total_students} students had ${active_this_week} active learners and showed an average improvement of ${batch_average_improvement >= 0 ? "+" : ""}${batch_average_improvement}.`;
-  const second = at_risk > 0
-    ? `${at_risk} student${at_risk > 1 ? "s are" : " is"} at risk (${atRiskNames.join(", ")}); please review and follow up as needed.`
-    : `No students are currently at risk; continue the current teaching approach to sustain momentum.`;
+  const second =
+    at_risk > 0
+      ? `${at_risk} student${at_risk > 1 ? "s are" : " is"} at risk (${atRiskNames.join(", ")}); please review and follow up as needed.`
+      : `No students are currently at risk; continue the current teaching approach to sustain momentum.`;
   const third = `Special mention to ${mostImprovedStudent} for the strongest improvement (${most_improved_delta >= 0 ? "+" : ""}${most_improved_delta} avg band delta) — keep encouraging targeted practice.`;
 
   return `${first} ${second} ${third}`;
