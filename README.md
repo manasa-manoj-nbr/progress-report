@@ -12,11 +12,10 @@ progress-reporter/
 │   ├── server.js                  # Express API server
 │   ├── services/
 │   │   ├── reportService.js       # Data loading, all arithmetic, at-risk classification
-│   │   └── aiService.js           # AI calls for narrative + WhatsApp messages (Gemini only)
+│   │   └── aiService.js           # AI calls for narrative + WhatsApp messages
 │   ├── data/
 │   │   └── mock_students.json     # Mock student data loaded from disk
-│   ├── .env                       # API key (not committed)
-│   └── .env.example               # Template for environment variables
+│   ├── .env                       # API key 
 └── frontend/
     └── src/                       # Vite + React + TailwindCSS dashboard UI
 ```
