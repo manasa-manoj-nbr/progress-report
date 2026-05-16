@@ -65,7 +65,43 @@ Stats:
 
 Write 3 professional, encouraging sentences. Mention the most improved student, the at-risk situation, and the overall batch trend.`;
 
-  return generateText(prompt, { maxTokens: 280, fallbackMaxTokens: 280 });
+  try {
+    const text = await generateText(prompt, { maxTokens: 400, fallbackMaxTokens: 400 });
+    // Validate the AI output: we expect at least 3 sentences worth of content.
+    if (!text || text.length < 40) {
+      return composeFallbackNarrative(aiContext);
+    }
+
+    // crude sentence count check — fallback if too short or truncated
+    const sentences = text.split(/[.?!]\s+/).filter(Boolean);
+    if (sentences.length < 3) {
+      return composeFallbackNarrative(aiContext);
+    }
+
+    return text;
+  } catch (err) {
+    return composeFallbackNarrative(aiContext);
+  }
+}
+
+// Deterministic local fallback to ensure a full 3-sentence narrative when AI fails
+function composeFallbackNarrative(aiContext) {
+  const { exam_type, summaryStats, atRiskNames, mostImprovedStudent } = aiContext;
+  const {
+    total_students,
+    active_this_week,
+    at_risk,
+    most_improved_delta,
+    batch_average_improvement,
+  } = summaryStats;
+
+  const first = `This week, the batch of ${total_students} students had ${active_this_week} active learners and showed an average improvement of ${batch_average_improvement >= 0 ? "+" : ""}${batch_average_improvement}.`;
+  const second = at_risk > 0
+    ? `${at_risk} student${at_risk > 1 ? "s are" : " is"} at risk (${atRiskNames.join(", ")}); please review and follow up as needed.`
+    : `No students are currently at risk; continue the current teaching approach to sustain momentum.`;
+  const third = `Special mention to ${mostImprovedStudent} for the strongest improvement (${most_improved_delta >= 0 ? "+" : ""}${most_improved_delta} avg band delta) — keep encouraging targeted practice.`;
+
+  return `${first} ${second} ${third}`;
 }
 
 // Receives pre-computed risk context for ONE student - never raw band arrays.
