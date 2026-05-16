@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Dashboard from './components/Dashboard';
 
-const API_URL = 'http://localhost:3001/api/batch-report';
+const API_URL = 'https://progress-report-83ba.onrender.com/api/batch-report';
 
 export default function App() {
   const [batchId, setBatchId] = useState('batch-kerala-2026');
